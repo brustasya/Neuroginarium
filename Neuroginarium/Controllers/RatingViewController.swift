@@ -132,7 +132,7 @@ class RatingViewController: UIViewController {
     }
     
     func configure(with userId: Int) {
-        self.userId = 0
+        self.userId = userId
         getRating()
     }
 }

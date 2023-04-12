@@ -544,7 +544,6 @@ class GameViewController: UIViewController {
         }, completion: { finished in
             UIView.animate(withDuration: 0.4, animations: {
                 self.sendButton.backgroundColor = UIColor.clear
-                print(self.associationTextField.text)
                 self.gameService.giveAssociation(
                     roundId: self.roundId,
                     association: self.associationTextField.text ?? "",
