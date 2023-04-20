@@ -17,6 +17,10 @@ class ResultsViewController: UIViewController {
     private lazy var gameService = GameService()
     private lazy var userService = UserService()
     
+    private lazy var descriptionLabel = UILabel()
+    private lazy var nameLabel = UILabel()
+    private lazy var winnerView = UIView()
+    
     private lazy var players: [UserPointsDto] = []
     
     private let titleLabel: UILabel = {
@@ -59,6 +63,20 @@ class ResultsViewController: UIViewController {
         return button
     }()
     
+    let endButton: UIButton = {
+        let button = UIButton()
+        button.setTitle("Продолжить", for: .normal)
+        button.backgroundColor = UIColor.clear
+        button.setTitleColor(Colors.lightOrange.uiColor, for: .normal)
+        
+        button.titleLabel?.font = .systemFont(ofSize: 20, weight: .bold)
+        button.layer.borderColor = Colors.lightOrange.uiColor.cgColor
+        button.layer.borderWidth = 4
+        
+        button.translatesAutoresizingMaskIntoConstraints = false
+        return button
+    }()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -74,34 +92,44 @@ class ResultsViewController: UIViewController {
         setupTableView()
         setupContinueButton()
         setupImageView()
-        // setupWinnerView()
+        setupWinnerView()
     }
     
     private func setupWinnerView() {
-        let nameLabel = UILabel()
-        nameLabel.text = "Победил Karim!"
-        nameLabel.font = .boldSystemFont(ofSize: 32)
-        nameLabel.textColor = Colors.darkBlue.uiColor
+        nameLabel.font = .boldSystemFont(ofSize: 28)
+        nameLabel.textColor = Colors.white.uiColor
         nameLabel.textAlignment = .center
         nameLabel.translatesAutoresizingMaskIntoConstraints = false
         
-        let winnerView = UIView()
-        winnerView.backgroundColor = Colors.white.uiColor
+        winnerView.backgroundColor = Colors.darkBlue.uiColor
+        winnerView.layer.borderColor = Colors.white.uiColor.cgColor
+        winnerView.layer.borderWidth = 3
+        winnerView.translatesAutoresizingMaskIntoConstraints = false
+
         view.addSubview(winnerView)
         view.addSubview(nameLabel)
-        winnerView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(endButton)
         
         NSLayoutConstraint.activate([
-            winnerView.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -200),
-            winnerView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
-            winnerView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            winnerView.heightAnchor.constraint(equalToConstant: 200),
+            winnerView.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20),
+            winnerView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
+            winnerView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 100),
+            winnerView.bottomAnchor.constraint(equalTo: endButton.topAnchor, constant: -220),
             
             nameLabel.centerXAnchor.constraint(equalTo: winnerView.centerXAnchor),
-            nameLabel.centerYAnchor.constraint(equalTo: winnerView.centerYAnchor)
+            nameLabel.centerYAnchor.constraint(equalTo: winnerView.centerYAnchor),
+            
+            endButton.heightAnchor.constraint(equalToConstant: 40),
+            endButton.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 40),
+            endButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40),
+            endButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
         ])
-          
-        continueButton.setTitle("Завершить", for: .normal)
+        
+        endButton.addTarget(self, action: #selector(endButtonTapped), for: .touchUpInside)
+        
+        winnerView.isHidden = true
+        nameLabel.isHidden = true
+        endButton.isHidden = true
     }
     
     private func setupTableView() {
@@ -124,10 +152,10 @@ class ResultsViewController: UIViewController {
     private func setupImageView() {
         view.addSubview(imageView)
         
-        let descriptionLabel = UILabel()
         descriptionLabel.text = "Загаданная карточка"
         descriptionLabel.textColor = Colors.darkBlue.uiColor
-        descriptionLabel.font = .boldSystemFont(ofSize: 18)
+        descriptionLabel.font = .boldSystemFont(ofSize: 20)
+        // descriptionLabel.backgroundColor = Colors.lightOrange.uiColor
         descriptionLabel.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(descriptionLabel)
         
@@ -139,12 +167,7 @@ class ResultsViewController: UIViewController {
             imageView.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             imageView.topAnchor.constraint(equalTo: descriptionLabel.bottomAnchor, constant: 16),
             imageView.bottomAnchor.constraint(lessThanOrEqualTo: continueButton.topAnchor, constant: -16),
-            // imageView.heightAnchor.constraint(equalToConstant: 300),
-            // imageView.widthAnchor.constraint(equalToConstant: 250)
         ])
-        
-        // imageView.image = UIImage(named: "image3")
-
     }
     
     private func setupContinueButton() {
@@ -197,10 +220,57 @@ class ResultsViewController: UIViewController {
             UIView.animate(withDuration: 0.4, animations: {
                 self.continueButton.backgroundColor = UIColor.clear
                 
-                let gameVC = GameViewController()
-                gameVC.configure(self.gameId, self.userId)
+                self.gameService.getGame(id: self.gameId) { [weak self]  result in
+                    switch result {
+                    case .success(let gameDto):
+                        print(gameDto)
+                        if (gameDto.gameStatus == GameStatus.finished) {
+                            DispatchQueue.main.async {
+                                self?.descriptionLabel.isHidden = true
+                                self?.imageView.isHidden = true
+                                self?.continueButton.isHidden = true
+                                
+                                self?.endButton.isHidden = false
+                                self?.winnerView.isHidden = false
+                                self?.nameLabel.isHidden = false
+                            }
+                            
+                            self?.gameService.getWinner(gameId: self?.gameId ?? 0) { [weak self] result in
+                                switch result {
+                                case .success(let name):
+                                    DispatchQueue.main.async {
+                                        self?.nameLabel.text = "Победил \(name)!"
+                                    }
+                                case .failure(let error):
+                                    print(error.localizedDescription)
+                                }
+                            }
+                        } else {
+                            DispatchQueue.main.async {
+                                let gameVC = GameViewController()
+                                gameVC.configure(self?.gameId ?? 0, self?.userId ?? 0)
+                                
+                                self?.navigationController?.pushViewController(gameVC, animated: true)
+                            }
+                        }
+                    case .failure(let error):
+                        print(error.localizedDescription)
+                    }
+                }
+            })
+        })
+    }
+    
+    @objc private func endButtonTapped() {
+        UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
+            self.endButton.backgroundColor = Colors.darkBlue.uiColor
+        }, completion: { finished in
+            UIView.animate(withDuration: 0.4, animations: {
+                self.endButton.backgroundColor = UIColor.clear
                 
-                self.navigationController?.pushViewController(gameVC, animated: true)
+                let startVC = StartViewController()
+                startVC.configure(with: self.userId)
+                self.navigationController?.pushViewController(startVC, animated: true)
             })
         })
     }
@@ -264,7 +334,7 @@ extension ResultsViewController: UITableViewDataSource, UITableViewDelegate {
         scoreSumLabel.centerYAnchor.constraint(equalTo: headerView.centerYAnchor).isActive = true
         
         let scoreLabel = UILabel()
-        scoreLabel.text = "Баллы\nза раун"
+        scoreLabel.text = "Баллы\nза раунд"
         scoreLabel.numberOfLines = 2
         scoreLabel.font = UIFont.systemFont(ofSize: 16, weight: .bold)
         scoreLabel.textAlignment = .center

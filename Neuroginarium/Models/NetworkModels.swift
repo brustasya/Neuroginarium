@@ -77,7 +77,7 @@ struct RoundPointsDto: Codable {
 
 struct UserPointsDto: Codable {
     let nickname: String
-    let points: Int
+    let points: Int?
     let totalPoints: Int
 }
 

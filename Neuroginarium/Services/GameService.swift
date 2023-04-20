@@ -43,20 +43,6 @@ class GameService {
         }.resume()
     }
 
-
-    /*
-     let joinGameRequest = JoinGameRequest(userId: 123, gameToken: "token123")
-
-     joinGame(request: joinGameRequest) { result in
-         switch result {
-         case .success:
-             print("Request succeeded")
-         case .failure(let error):
-             print("Request failed with error: \(error.localizedDescription)")
-         }
-     }
-     */
-    
     // MARK: - Post requests
     func startGame(gameToken: String, completion: @escaping (Result<String, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/start?gameToken=\(gameToken)") else {
@@ -88,47 +74,6 @@ class GameService {
 
         task.resume()
     }
-
-    /*
-     let gameToken = "token123"
-
-     startGame(gameToken: gameToken) { result in
-         switch result {
-         case .success(let responseString):
-             print("Request succeeded with response: \(responseString)")
-         case .failure(let error):
-             print("Request failed with error: \(error.localizedDescription)")
-         }
-     }
-     */
-    
-   /* func vote(roundId: Int, userId: Int, cardId: Int, completion: @escaping (Result<VotingResult, Error>) -> Void) {
-        let url = URL(string: "\(baseURL)/game/rounds/\(roundId)/vote")!
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let parameters = ["user_id": String(userId), "card_id": String(cardId)]
-        request.httpBody = try? JSONSerialization.data(withJSONObject: parameters)
-        request.addValue("application/json", forHTTPHeaderField: "Content-Type")
-
-        let task = URLSession.shared.dataTask(with: request) { data, response, error in
-            guard let data = data else {
-                completion(.failure(error ?? NSError(domain: "error", code: -1, userInfo: nil)))
-                return
-            }
-
-            do {
-                let decoder = JSONDecoder()
-                let votingResult = try decoder.decode(VotingResult.self, from: data)
-                completion(.success(votingResult))
-            } catch {
-                completion(.failure(error))
-            }
-        }
-
-        task.resume()
-    } */
-    
 
     func vote(roundId: Int, userId: Int, cardId: Int, completionHandler: @escaping (Result<VotingResult, Error>) -> Void) {
         let urlString = "\(baseURL)/game/rounds/\(roundId)/vote?user_id=\(userId)&card_id=\(cardId)"
@@ -163,18 +108,6 @@ class GameService {
 
         task.resume()
     }
-
-
-    /*
-     vote(roundId: 123, userId: 456, cardId: 789) { result in
-         switch result {
-         case .success(let votingResult):
-             // обработка результата голосования
-         case .failure(let error):
-             // обработка ошибки
-         }
-     }
-     */
     
     func giveAssociation(roundId: Int, association: String, cardId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
         
@@ -208,30 +141,12 @@ class GameService {
         }.resume()
     }
 
-
-    /*
-     let roundId = 123
-     let association = "some association"
-     let cardId = 456
-
-     giveAssociation(roundId: roundId, association: association, cardId: cardId) { result in
-         switch result {
-         case .success:
-             print("Association given successfully")
-         case .failure(let error):
-             print("Error giving association: \(error.localizedDescription)")
-         }
-     }
-
-     */
-    
     func giveCard(roundId: Int, cardId: Int, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/rounds/\(roundId)/give_card?card_id=\(cardId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
             return
         }
-        print(url)
-       // let url = URL(string: "\(baseURL)/game/rounds/\(roundId)/give_card?card_id=\(cardId)")!
+        
         var request = URLRequest(url: url)
         request.httpMethod = "POST"
         request.addValue("application/json", forHTTPHeaderField: "Content-Type")
@@ -245,17 +160,6 @@ class GameService {
         }
         task.resume()
     }
-
-    /*
-     giveCard(roundId: roundId, cardId: cardId) { result in
-         switch result {
-         case .success:
-             print("Карта успешно передана в колоду!")
-         case .failure(let error):
-             print("Ошибка при передаче карты в колоду: \(error.localizedDescription)")
-         }
-     }
-     */
 
     func createGame(userId: Int, completion: @escaping (Result<GameCreateResponse, Error>) -> Void) {
         let url = URL(string: "\(baseURL)/game/create?user_id=\(userId)")!
@@ -281,16 +185,6 @@ class GameService {
         task.resume()
     }
     
-    /*
-    createGame(userId: 123) { result in
-        switch result {
-        case .success(let response):
-            print("Game created with gameId: \(response.gameId) and gameToken: \(response.gameToken)")
-        case .failure(let error):
-            print("Error creating game: \(error.localizedDescription)")
-        }
-    }*/
-
     // MARK: - GET requests
     func findGame(userId: Int, completion: @escaping (Result<Int, Error>) -> Void) {
         guard var components = URLComponents(string: "\(baseURL)/game") else {
@@ -325,18 +219,6 @@ class GameService {
         task.resume()
     }
 
-    /*
-     findGame(userId: 123) { result in
-         switch result {
-         case .success(let gameId):
-             print("Game ID: \(gameId)")
-         case .failure(let error):
-             print("Error: \(error)")
-         }
-     }
-
-     */
-
     func getGame(id: Int, completion: @escaping (Result<GameDto, Error>) -> Void) {
         let urlString = "\(baseURL)/game/\(id)"
         guard let url = URL(string: urlString) else {
@@ -364,14 +246,6 @@ class GameService {
             }
         }.resume()
     }
-
-    /*
-     if let gameDto = getGame(id: 123, userId: 456) {
-         print("Игра со статусом \(gameDto.gameStatus) и количеством игроков \(gameDto.playersCnt)")
-     } else {
-         print("Не удалось получить информацию об игре")
-     }
-     */
 
     func getWinner(gameId: Int, completion: @escaping (Result<String, Error>) -> Void) {
         let endpoint = "/game/\(gameId)/winner"
@@ -409,17 +283,6 @@ class GameService {
         }.resume()
     }
 
-    /*
-     getWinner(gameId: 123) { winner, error in
-         if let error = error {
-             print("Error: \(error.localizedDescription)")
-         } else if let winner = winner {
-             print("Winner: \(winner)")
-         }
-     }
-
-     */
-    
     func getCurrentRound(id: Int, completion: @escaping (Result<GameRoundDto, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/\(id)/rounds/current") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -450,17 +313,6 @@ class GameService {
         }
         task.resume()
     }
-
-    /*
-     getCurrentRound(id: 123) { result in
-         switch result {
-         case .success(let round):
-             print("Received round with id \(round.id)")
-         case .failure(let error):
-             print("Error occurred while fetching current round: \(error.localizedDescription)")
-         }
-     }
-     */
     
     func getRound(roundId: Int, completion: @escaping (Result<GameRoundDto, Error>) -> Void) {
         let urlString = "\(baseURL)/game/rounds/\(roundId)"
@@ -523,17 +375,6 @@ class GameService {
         task.resume()
     }
 
-    /*
-     getPlayers(id: 123) { result in
-         switch result {
-         case .success(let players):
-             print("Players: \(players)")
-         case .failure(let error):
-             print("Error: \(error)")
-         }
-     }
-     */
-    
     func getCardsOnTable(id: Int, completion: @escaping (Result<[CardDto], Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/\(id)/cards_on_table") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -565,18 +406,6 @@ class GameService {
         task.resume()
     }
 
-    /*
-     getCardsOnTable(id: 123) { result in
-         switch result {
-         case .success(let cards):
-             print("Cards on table:")
-             cards.forEach { print("- \($0.image)") }
-         case .failure(let error):
-             print("Error: \(error)")
-         }
-     }
-     */
-    
     func getPlayerCards(gameId: Int, userId: Int, completion: @escaping (Result<[CardDto], Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/\(gameId)/cards/\(userId)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -608,17 +437,6 @@ class GameService {
         task.resume()
     }
 
-    /*
-     getPlayerCards(gameId: 123, userId: 456) { result in
-         switch result {
-         case .success(let cards):
-             print("Received cards: \(cards)")
-         case .failure(let error):
-             print("Error: \(error)")
-         }
-     }
-     */
-    
     func getRoundPoints(roundId: Int, completion: @escaping (Result<RoundPointsDto, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/rounds/\(roundId)/get_points") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -649,22 +467,6 @@ class GameService {
         task.resume()
     }
 
-     /*
-      let roundId = 123
-      getRoundPoints(roundId: roundId) { result in
-          switch result {
-          case .success(let roundPoints):
-              print("Round real image: \(roundPoints.realImage)")
-              print("Users points:")
-              for userPoints in roundPoints.usersPoints {
-                  print("\(userPoints.nickname) - points: \(userPoints.points), total points: \(userPoints.totalPoints)")
-              }
-          case .failure(let error):
-              print("Error getting round points: \(error.localizedDescription)")
-          }
-      }
-
-      */
     func getAssociation(roundId: Int, completion: @escaping (Result<String, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/game/rounds/\(roundId)/get_association") else {
             return completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -688,16 +490,4 @@ class GameService {
         
         task.resume()
     }
-
-    /*
-     getAssociation(roundId: 123) { result in
-         switch result {
-         case .success(let association):
-             print("Association: \(association)")
-         case .failure(let error):
-             print("Error: \(error)")
-         }
-     }
-     */
-
 }

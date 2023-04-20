@@ -156,7 +156,6 @@ class WatingRoomViewController: UIViewController, UITableViewDelegate, UITableVi
             self?.gameService.getPlayers(id: self?.gameId ?? 0) { [weak self] result in
                 switch result {
                 case .success(let players):
-                    // print("Players: \(players)")
                     DispatchQueue.main.async {
                         self?.players = players
                         self?.playersTable.reloadData()

@@ -15,7 +15,7 @@ class RatingViewController: UIViewController {
     
     private let titleLabel: UILabel = {
         let label = UILabel()
-        label.text = "Рэйтинг"
+        label.text = "Рейтинг"
         label.font = UIFont.systemFont(ofSize: 24, weight: .bold)
         label.textColor = Colors.white.uiColor
         return label

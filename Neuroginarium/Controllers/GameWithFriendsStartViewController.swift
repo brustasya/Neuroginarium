@@ -213,7 +213,6 @@ class GameWithFriendsStartViewController: UIViewController {
     }
 }
 
-
 extension GameWithFriendsStartViewController: UITextFieldDelegate {
     func textFieldShouldReturn(_ textField: UITextField) -> Bool {
         textField.resignFirstResponder()

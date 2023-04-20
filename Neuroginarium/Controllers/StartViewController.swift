@@ -157,7 +157,7 @@ class StartViewController: UIViewController {
     
     
     private func setupRatingButton() {
-        ratingButton.setTitle("РЭЙТИНГ ИГРОКОВ", for: .normal)
+        ratingButton.setTitle("РЕЙТИНГ ИГРОКОВ", for: .normal)
         ratingButton.backgroundColor = Colors.lightOrange.uiColor
         ratingButton.setTitleColor(Colors.darkBlue.uiColor, for: .normal)
         

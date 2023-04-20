@@ -88,7 +88,7 @@ class PlayerTableViewCell: UITableViewCell {
     func configure(_ player: UserPointsDto, _ rank: Int) {
         rankLabel.text = "\(rank)"
         nameLabel.text = player.nickname
-        roundScoreLabel.text = "\(player.points)"
+        roundScoreLabel.text = "\(player.points ?? 0)"
         totalScoreLabel.text = "\(player.totalPoints)"
      }
     

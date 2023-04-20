@@ -32,7 +32,7 @@ class RulesViewController: UIViewController {
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 16).isActive = true
         scrollView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16).isActive = true
-        scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16).isActive = true
+        scrollView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -8).isActive = true
         scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -20).isActive = true
         
         let rulesLabel = UILabel()
@@ -83,8 +83,9 @@ class RulesViewController: UIViewController {
               за каждого игрока, который выбрал
               их карточку.
         
-        🔸 После подсчета очков роль ведущего
-           переходит к следующему игроку.
+        🔸 После подсчета очков роль
+           ведущего переходит к следующему
+           игроку.
         
         🔸 Игра заканчивается, когда один из
            игроков набирает победное

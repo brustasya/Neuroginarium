@@ -16,7 +16,6 @@ class GameViewController: UIViewController {
     let pageControl = UIPageControl()
     
     private var cards: [CardDto] = []
-    //let images: [UIImage] = [UIImage(named: "image1") ?? UIImage(), UIImage(named: "image2") ?? UIImage(), UIImage(named: "image3") ?? UIImage()]
     
     private lazy var userId = 0
     private lazy var gameId = 0
@@ -59,7 +58,8 @@ class GameViewController: UIViewController {
     let associatedLabel: UILabel = {
         let label = UILabel()
         label.textColor = .white
-        label.font = .boldSystemFont(ofSize: 18)
+        label.font = .boldSystemFont(ofSize: 20)
+        label.backgroundColor = Colors.darkBlue.uiColor
         label.numberOfLines = 0
         label.textAlignment = .center
         label.translatesAutoresizingMaskIntoConstraints = false
@@ -110,7 +110,6 @@ class GameViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        //view.backgroundColor = .black
         let backgroundImage = UIImage(named: "back")
         let backgroundImageView = UIImageView(image: backgroundImage)
         view.addSubview(backgroundImageView)
@@ -129,8 +128,14 @@ class GameViewController: UIViewController {
         
         addTapGesture()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow), name: UIResponder.keyboardWillShowNotification, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide), name: UIResponder.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillShow),
+            name: UIResponder.keyboardWillShowNotification, object: nil
+        )
+        NotificationCenter.default.addObserver(
+            self, selector: #selector(keyboardWillHide),
+            name: UIResponder.keyboardWillHideNotification, object: nil
+        )
     }
     
     override func viewDidLayoutSubviews() {
@@ -186,15 +191,14 @@ class GameViewController: UIViewController {
         view.addSubview(associationTextField)
 
         associationTextField.delegate = self
-        // associationTextField.isHidden = true
+        associationTextField.isHidden = true
     }
     
     private func setupAssociationLabel() {
         view.addSubview(associatedLabel)
         
-        // associatedLabel.text = "Привет привет привет"
         NSLayoutConstraint.activate([
-            associatedLabel.topAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: 16),
+            associatedLabel.topAnchor.constraint(equalTo: pageControl.bottomAnchor, constant: 32),
             associatedLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
             associatedLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             associatedLabel.bottomAnchor.constraint(lessThanOrEqualTo: sendButton.topAnchor, constant: -16),
@@ -214,11 +218,13 @@ class GameViewController: UIViewController {
     }
     
     @objc func keyboardWillShow(notification: NSNotification) {
-        guard let keyboardSize = (notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue)?.cgRectValue.size else { return }
+        guard let keyboardSize = (
+            notification.userInfo?[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue
+        )?.cgRectValue.size else { return }
         
         UIView.animate(withDuration: 0.3) {
-            self.associationTextField.frame.origin.y = self.view.frame.size.height - keyboardSize.height - self.associationTextField.frame.size.height - 8
-            
+            self.associationTextField.frame.origin.y = self.view.frame.size.height -
+            keyboardSize.height - self.associationTextField.frame.size.height - 8
         }
     }
     
@@ -236,7 +242,7 @@ class GameViewController: UIViewController {
             scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
             scrollView.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             scrollView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 2/3),
+            scrollView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1.7/3),
         ])
         
         scrollView.delegate = self
@@ -257,7 +263,7 @@ class GameViewController: UIViewController {
             NSLayoutConstraint.activate([
                 imageView.topAnchor.constraint(equalTo: scrollView.topAnchor),
                 imageView.widthAnchor.constraint(equalTo: view.widthAnchor),
-                imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 2/3),
+                imageView.heightAnchor.constraint(equalTo: view.heightAnchor, multiplier: 1.7/3),
             ])
             
             if let previousImageView = previousImageView {
@@ -335,7 +341,7 @@ class GameViewController: UIViewController {
             isImageSelectedEnable = true
             choosedButton.isHidden = false
             associatedLabel.isHidden = false
-            associatedLabel.text = association
+            associatedLabel.text = "Загаданная ассоциация:\n\(association)"
             associationTextField.isHidden = true
         }
         
@@ -368,7 +374,7 @@ class GameViewController: UIViewController {
             isImageSelectedEnable = true
             voteButton.isHidden = false
             associatedLabel.isHidden = false
-            associatedLabel.text = association
+            associatedLabel.text = "Загаданная ассоциация:\n\(association)" 
             associationTextField.isHidden = true
         }
         
@@ -539,83 +545,89 @@ class GameViewController: UIViewController {
     }
     
     @objc func sendButtonTapped() {
-        UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
-            self.sendButton.backgroundColor = Colors.darkBlue.uiColor
-        }, completion: { finished in
-            UIView.animate(withDuration: 0.4, animations: {
-                self.sendButton.backgroundColor = UIColor.clear
-                self.gameService.giveAssociation(
-                    roundId: self.roundId,
-                    association: self.associationTextField.text ?? "",
-                    cardId: self.cards[self.indexOfSelectedCard].id
-                ) { [weak self] result in
-                    switch result {
-                    case .success:
-                        print("Association given successfully")
-                        DispatchQueue.main.async {
-                            let gameVC = GameViewController()
-                            gameVC.configure(self?.gameId ?? 0, self?.userId ?? 0)
-                            self?.navigationController?.pushViewController(gameVC, animated: true)
+        if indexOfSelectedCard != -1 && associationTextField.text != "" {
+            UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
+                self.sendButton.backgroundColor = Colors.darkBlue.uiColor
+            }, completion: { finished in
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.sendButton.backgroundColor = UIColor.clear
+                    self.gameService.giveAssociation(
+                        roundId: self.roundId,
+                        association: self.associationTextField.text ?? "",
+                        cardId: self.cards[self.indexOfSelectedCard].id
+                    ) { [weak self] result in
+                        switch result {
+                        case .success:
+                            print("Association given successfully")
+                            DispatchQueue.main.async {
+                                let gameVC = GameViewController()
+                                gameVC.configure(self?.gameId ?? 0, self?.userId ?? 0)
+                                self?.navigationController?.pushViewController(gameVC, animated: true)
+                            }
+                        case .failure(let error):
+                            print("Error giving association: \(error.localizedDescription)")
                         }
-                    case .failure(let error):
-                        print("Error giving association: \(error.localizedDescription)")
                     }
-                }
+                })
             })
-        })
+        }
     }
     
     
     @objc func choosedButtonTapped() {
-        UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
-            self.choosedButton.backgroundColor = Colors.darkBlue.uiColor
-        }, completion: { finished in
-            UIView.animate(withDuration: 0.4, animations: {
-                self.choosedButton.backgroundColor = UIColor.clear
-                
-                self.gameService.giveCard(roundId: self.roundId, cardId: self.cards[self.indexOfSelectedCard].id) { [weak self] result in
-                    switch result {
-                    case .success:
-                        print("Карта успешно передана в колоду!")
-                        DispatchQueue.main.async {
-                            self?.isImageSelectedEnable = false
-                            self?.associatedLabel.text = "Ожидайте, пока остальные игроки выберут карточки"
-                            self?.choosedButton.isEnabled = false
+        if indexOfSelectedCard != -1 {
+            UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
+                self.choosedButton.backgroundColor = Colors.darkBlue.uiColor
+            }, completion: { finished in
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.choosedButton.backgroundColor = UIColor.clear
+                    
+                    self.gameService.giveCard(roundId: self.roundId, cardId: self.cards[self.indexOfSelectedCard].id) { [weak self] result in
+                        switch result {
+                        case .success:
+                            print("Карта успешно передана в колоду!")
+                            DispatchQueue.main.async {
+                                self?.isImageSelectedEnable = false
+                                self?.associatedLabel.text = "Ожидайте, пока остальные\nигроки выберут карточки"
+                                self?.choosedButton.isEnabled = false
+                            }
+                            self?.transitionToVoting()
+                        case .failure(let error):
+                            print("Ошибка при передаче карты в колоду: \(error.localizedDescription)")
                         }
-                        self?.transitionToVoting()
-                    case .failure(let error):
-                        print("Ошибка при передаче карты в колоду: \(error.localizedDescription)")
                     }
-                }
-                
+                    
+                })
             })
-        })
+        }
     }
         
     @objc func voteButtonTapped() {
-        UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
-            self.voteButton.backgroundColor = Colors.darkBlue.uiColor
-            
-        }, completion: { finished in
-            UIView.animate(withDuration: 0.4, animations: {
-                self.voteButton.backgroundColor = UIColor.clear
+        if indexOfSelectedCard != -1 {
+            UIView.animate(withDuration: 0.4, delay: 0, options: [], animations: {
+                self.voteButton.backgroundColor = Colors.darkBlue.uiColor
                 
-                self.gameService.vote(roundId: self.roundId, userId: self.userId, cardId: self.cards[self.indexOfSelectedCard].id) { [weak self] result in
-                    switch result {
-                    case .success(_):
-                        DispatchQueue.main.async {
-                            self?.isImageSelectedEnable = false
-                            self?.associatedLabel.text = "Ожидайте, пока остальные игроки проголосуют"
-                            self?.choosedButton.isEnabled = false
+            }, completion: { finished in
+                UIView.animate(withDuration: 0.4, animations: {
+                    self.voteButton.backgroundColor = UIColor.clear
+                    
+                    self.gameService.vote(roundId: self.roundId, userId: self.userId, cardId: self.cards[self.indexOfSelectedCard].id) { [weak self] result in
+                        switch result {
+                        case .success(_):
+                            DispatchQueue.main.async {
+                                self?.isImageSelectedEnable = false
+                                self?.associatedLabel.text = "Ожидайте, пока остальные\nигроки проголосуют"
+                                self?.choosedButton.isEnabled = false
+                            }
+                            
+                            self?.presentResults()
+                        case .failure(let error):
+                            print("Ошибка при голосовании: \(error.localizedDescription)")
                         }
-                        
-                        self?.presentResults()
-                    case .failure(let error):
-                        print("Ошибка при голосовании: \(error.localizedDescription)")
                     }
-                }
+                })
             })
-        })
+        }
     }
     
     @objc func pageControlTapped() {
@@ -646,7 +658,9 @@ extension GameViewController: UITextFieldDelegate {
     }
     
     private func addTapGesture() {
-        let tapGesture = UITapGestureRecognizer(target: self, action: #selector(dismissKeyboard))
+        let tapGesture = UITapGestureRecognizer(
+            target: self, action: #selector(dismissKeyboard)
+        )
         view.addGestureRecognizer(tapGesture)
     }
 }

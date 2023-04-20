@@ -155,7 +155,7 @@ extension LoginViewController: UITextFieldDelegate {
         textField.resignFirstResponder()
         return true
     }
-    
+
     @objc private func dismissKeyboard() {
         view.endEditing(true)
     }

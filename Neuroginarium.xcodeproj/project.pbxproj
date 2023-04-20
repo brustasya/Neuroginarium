@@ -15,7 +15,7 @@
 		8549A86529D62D3E00F0B2E3 /* RulesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A86429D62D3E00F0B2E3 /* RulesViewController.swift */; };
 		8549A86829D6D43A00F0B2E3 /* PlayerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A86729D6D43A00F0B2E3 /* PlayerTableViewCell.swift */; };
 		8549A86A29D7553C00F0B2E3 /* PlayerRatingTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A86929D7553C00F0B2E3 /* PlayerRatingTableViewCell.swift */; };
-		8549A86E29D8C3DC00F0B2E3 /* JoinGameRequestModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A86D29D8C3DC00F0B2E3 /* JoinGameRequestModel.swift */; };
+		8549A86E29D8C3DC00F0B2E3 /* NetworkModels.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A86D29D8C3DC00F0B2E3 /* NetworkModels.swift */; };
 		8549A87129D8C6D700F0B2E3 /* GameService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A87029D8C6D700F0B2E3 /* GameService.swift */; };
 		8549A87329D8F04200F0B2E3 /* UserService.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A87229D8F04200F0B2E3 /* UserService.swift */; };
 		8549A87529D9846F00F0B2E3 /* WatingRoomViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 8549A87429D9846F00F0B2E3 /* WatingRoomViewController.swift */; };
@@ -38,7 +38,7 @@
 		8549A86429D62D3E00F0B2E3 /* RulesViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = RulesViewController.swift; sourceTree = "<group>"; };
 		8549A86729D6D43A00F0B2E3 /* PlayerTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerTableViewCell.swift; sourceTree = "<group>"; };
 		8549A86929D7553C00F0B2E3 /* PlayerRatingTableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PlayerRatingTableViewCell.swift; sourceTree = "<group>"; };
-		8549A86D29D8C3DC00F0B2E3 /* JoinGameRequestModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = JoinGameRequestModel.swift; sourceTree = "<group>"; };
+		8549A86D29D8C3DC00F0B2E3 /* NetworkModels.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NetworkModels.swift; sourceTree = "<group>"; };
 		8549A87029D8C6D700F0B2E3 /* GameService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GameService.swift; sourceTree = "<group>"; };
 		8549A87229D8F04200F0B2E3 /* UserService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserService.swift; sourceTree = "<group>"; };
 		8549A87429D9846F00F0B2E3 /* WatingRoomViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = WatingRoomViewController.swift; sourceTree = "<group>"; };
@@ -74,6 +74,15 @@
 			path = Helpers;
 			sourceTree = "<group>";
 		};
+		8546F06729F1793200ECDF0E /* App */ = {
+			isa = PBXGroup;
+			children = (
+				8579B46C29896FF90025433B /* SceneDelegate.swift */,
+				8579B46A29896FF90025433B /* AppDelegate.swift */,
+			);
+			path = App;
+			sourceTree = "<group>";
+		};
 		8549A86629D62D5000F0B2E3 /* Controllers */ = {
 			isa = PBXGroup;
 			children = (
@@ -103,7 +112,7 @@
 		8549A86C29D8C3BF00F0B2E3 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				8549A86D29D8C3DC00F0B2E3 /* JoinGameRequestModel.swift */,
+				8549A86D29D8C3DC00F0B2E3 /* NetworkModels.swift */,
 			);
 			path = Models;
 			sourceTree = "<group>";
@@ -136,13 +145,12 @@
 		8579B46929896FF90025433B /* Neuroginarium */ = {
 			isa = PBXGroup;
 			children = (
+				8546F06729F1793200ECDF0E /* App */,
 				8501E6D029DD9D6D002949E6 /* Helpers */,
 				8549A86F29D8C57900F0B2E3 /* Services */,
 				8549A86C29D8C3BF00F0B2E3 /* Models */,
 				8549A86B29D8C36A00F0B2E3 /* Views */,
 				8549A86629D62D5000F0B2E3 /* Controllers */,
-				8579B46A29896FF90025433B /* AppDelegate.swift */,
-				8579B46C29896FF90025433B /* SceneDelegate.swift */,
 				8579B47329896FFB0025433B /* Assets.xcassets */,
 				8579B47829896FFC0025433B /* Info.plist */,
 			);
@@ -225,7 +233,7 @@
 				8579B46D29896FF90025433B /* SceneDelegate.swift in Sources */,
 				8549A87929D9E58600F0B2E3 /* LoginViewController.swift in Sources */,
 				8549A86829D6D43A00F0B2E3 /* PlayerTableViewCell.swift in Sources */,
-				8549A86E29D8C3DC00F0B2E3 /* JoinGameRequestModel.swift in Sources */,
+				8549A86E29D8C3DC00F0B2E3 /* NetworkModels.swift in Sources */,
 				8549A86A29D7553C00F0B2E3 /* PlayerRatingTableViewCell.swift in Sources */,
 				8549A87329D8F04200F0B2E3 /* UserService.swift in Sources */,
 				8549A87B29D9E5A000F0B2E3 /* RegistrationViewController.swift in Sources */,

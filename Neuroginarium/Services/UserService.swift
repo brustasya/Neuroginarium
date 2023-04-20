@@ -43,50 +43,6 @@ class UserService {
         task.resume()
     }
 
-
-    /*
-     checkEmailConfirmationToken(email: "example@example.com", token: "some_token") { error in
-         if let error = error {
-             print("Error checking email confirmation token: \(error.localizedDescription)")
-         } else {
-             print("Email confirmation token checked successfully.")
-         }
-     }
-     */
-    
-    /*func addUser(createUserDto: CreateUserDto, completion: @escaping (Result<Void, Error>) -> Void) {
-        guard let url = URL(string: "http://158.160.26.234:8080/registration/addUser") else {
-            completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
-            return
-        }
-        
-        var request = URLRequest(url: url)
-        request.httpMethod = "POST"
-        
-        let encoder = JSONEncoder()
-        do {
-            let jsonData = try encoder.encode(createUserDto)
-            request.httpBody = jsonData
-        } catch {
-            completion(.failure(error))
-            return
-        }
-        
-        URLSession.shared.dataTask(with: request) { data, response, error in
-            if let error = error {
-                completion(.failure(error))
-                return
-            }
-            
-            guard let httpResponse = response as? HTTPURLResponse, (200...299).contains(httpResponse.statusCode) else {
-                completion(.failure(NSError(domain: "Server error", code: 0, userInfo: nil)))
-                return
-            }
-            
-            completion(.success(()))
-        }.resume()
-    }*/
-    
     func addUser(createUserDto: Encodable, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/registration/addUser") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -121,22 +77,6 @@ class UserService {
         }.resume()
     }
 
-
-    
-    /*
-     let createUserDto = CreateUserDto(nickname: "JohnDoe", password: "password123", email: "johndoe@example.com")
-
-     addUser(createUserDto: createUserDto) { result in
-         switch result {
-         case .success:
-             print("User successfully created!")
-         case .failure(let error):
-             print("Error creating user: \(error.localizedDescription)")
-         }
-     }
-
-     */
-    
     func sendEmailConfirmation(for email: String, completion: @escaping (Result<Void, Error>) -> Void) {
         guard let url = URL(string: "\(baseURL)/registration/\(email)") else {
             completion(.failure(NSError(domain: "Invalid URL", code: 0, userInfo: nil)))
@@ -162,18 +102,6 @@ class UserService {
         }.resume()
     }
 
-    /*
-     sendEmailConfirmation(for: "example@example.com") { result in
-         switch result {
-         case .success:
-             print("Email confirmation token sent successfully.")
-         case .failure(let error):
-             print("Error sending email confirmation token: \(error.localizedDescription)")
-         }
-     }
-
-     */
-    
     // MARK: - user-controller
     
     func getUserInfoByPlayerId(playerId: Int64, completion: @escaping (Result<UserInfoDto, Error>) -> Void) {
@@ -205,17 +133,6 @@ class UserService {
         task.resume()
     }
 
-    /*
-     getUserInfoByPlayerId(playerId: 123) { result in
-         switch result {
-         case .success(let userInfo):
-             print("User info: \(userInfo)")
-         case .failure(let error):
-             print("Error: \(error.localizedDescription)")
-         }
-     }
-     */
-    
     func getUserInfoById(userId: Int, completion: @escaping (Result<UserInfoDto, Error>) -> Void) {
         let urlString = "\(baseURL)/user/\(userId)/nickname"
         guard let url = URL(string: urlString) else {
@@ -253,18 +170,6 @@ class UserService {
         }.resume()
     }
 
-    /*
-     let userId = 123
-     getUserInfoById(userId: userId) { result in
-         switch result {
-         case .success(let userInfo):
-             print("User info: \(userInfo)")
-         case .failure(let error):
-             print("Error: \(error.localizedDescription)")
-         }
-     }
-
-     */
     // MARK: - rating-controller
     
     func getTop50Users(completion: @escaping (Result<[UserNicknameRatingDto], Error>) -> Void) {
@@ -303,18 +208,6 @@ class UserService {
         }.resume()
     }
 
-    /*
-     getTop50Users { result in
-         switch result {
-         case .success(let users):
-             print(users)
-         case .failure(let error):
-             print(error)
-         }
-     }
-
-     */
-    
     func getRating(userId: Int, completionHandler: @escaping (Result<UserRatingDto, Error>) -> Void) {
         let urlString = "\(baseURL)/rating/\(userId)"
         guard let url = URL(string: urlString) else {
@@ -356,18 +249,6 @@ class UserService {
         }.resume()
     }
 
-    /*
-     getRatingForUser(withId: 123) { result in
-         switch result {
-         case .success(let rating):
-             print("User rating is: \(rating)")
-         case .failure(let error):
-             print("Error occurred: \(error.localizedDescription)")
-         }
-     }
-
-     */
-    
     // MARK: - auth-controller
     
     func authorize(nickname: String, password: String, completion: @escaping (Result<UserInfoDto, Error>) -> Void) {
@@ -407,16 +288,4 @@ class UserService {
         }
         task.resume()
     }
-
-    /*
-     authorize(nickname: "example", password: "password") { (result) in
-         switch result {
-         case .success(let userInfo):
-             print("Authorized user with ID \(userInfo.userId)")
-         case .failure(let error):
-             print("Authorization failed with error: \(error.localizedDescription)")
-         }
-     }
-
-     */
 }
